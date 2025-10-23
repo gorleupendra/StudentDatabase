@@ -19,16 +19,15 @@
 	<dependencies>
 		<!-- All your dependencies (servlet, jstl, postgresql, etc.) -->
         <dependency>
-			<groupId>jakarta.servlet</groupId>
-			<artifactId>jakarta.servlet-api</artifactId>
-			<version>6.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>jakarta.servlet.jsp.jstl</groupId>
-			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-			<version>3.0.0</version>
-		</dependency>
+         <groupId>jakarta.servlet.jsp.jstl</groupId>
+         <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+         <version>3.0.0</version>  <!-- Ensure this is 3.0.0, not 3.0.0-RC1 -->
+     </dependency>
+     <dependency>
+         <groupId>org.glassfish.web</groupId>
+         <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+         <version>3.0.0</version>  <!-- This is already correct -->
+     </dependency>
 		<dependency>
 			<groupId>org.glassfish.web</groupId>
 			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
