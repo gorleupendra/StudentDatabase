@@ -16,8 +16,8 @@ COPY src ./src
 # Build the WAR file, skipping tests for deployment
 RUN mvn clean package -DskipTests
 
-# Download webapp-runner.jar (latest stable version for reproducibility)
-RUN wget -O webapp-runner.jar https://repo1.maven.org/maven2/com/github/jsimone/webapp-runner/9.0.72.0/webapp-runner-9.0.72.0.jar
+# Download webapp-runner.jar using Maven (more reliable than wget)
+RUN mvn dependency:get -Dartifact=com.github.jsimone:webapp-runner:9.0.72.0 -Ddest=webapp-runner.jar
 
 # ---------------------------
 # Stage 2: Run the application
