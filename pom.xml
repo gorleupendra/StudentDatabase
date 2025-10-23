@@ -4,7 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>in.ac.au.msc</groupId>
-	<artifactId>admin-portal</artifactId> <version>0.0.1-SNAPSHOT</version>
+	<artifactId>admin-portal</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>AU MSc Computer Science Portal</name>
 	<description>A management portal for MSc CS students.</description>
@@ -16,6 +17,11 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>jakarta.servlet.jsp.jstl</groupId>
+			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.glassfish.web</groupId>
 			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
@@ -50,7 +56,8 @@
 	</dependencies>
 
 	<build>
-		<finalName>admin-portal</finalName> <plugins>
+		<finalName>admin-portal</finalName>
+		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.11.0</version>
