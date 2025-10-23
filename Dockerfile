@@ -1,8 +1,8 @@
 # ---------------------------
 # Stage 1: Build .war file
 # ---------------------------
-# Use a Maven/Java 17 image to build the project
-FROM maven:3.9-eclipse-temurin-17 AS builder
+# CHANGED: Use a Maven/Java 20 image to build the project
+FROM maven:3.9.6-eclipse-temurin-20 AS builder
 
 # Set working directory
 WORKDIR /app
@@ -14,39 +14,38 @@ COPY pom.xml .
 COPY src ./src
 
 # Build the WAR file, skipping tests for deployment
-# The -U flag forces an update of dependencies, clearing bad cache
+# The -U flag forces an update of dependencies
 RUN mvn clean package -U -DskipTests
 
-# CHANGED: Use the correct 'com.heroku' groupId and a valid version
-RUN mvn dependency:get -Dartifact=com.heroku:webapp-runner:9.0.97.0 -Ddest=webapp-runner.jar
+# REMOVED: webapp-runner.jar is no longer needed
+# We will use a full Tomcat server instead.
 
 # ---------------------------
 # Stage 2: Run the application
 # ---------------------------
-# Use a lightweight Java 17 image for the runtime
-FROM eclipse-temurin:17-jre-jammy
+# CHANGED: Use the official Tomcat 10.1 image.
+# We use the jdk21 tag because it's the latest Long-Term Support (LTS)
+# version and is required to run code compiled with Java 20.
+FROM tomcat:10.1-jdk20-temurin
 
-# Create a non-root user for security
-RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
+# Remove the default Tomcat webapps (manager, examples, etc.)
+RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Set working directory
-WORKDIR /app
+# Copy the .war file from the 'builder' stage into Tomcat's webapps directory
+# It is renamed to 'ROOT.war' so it deploys to the root URL
+# (e.g., https://your-app.onrender.com/ instead of /admin-portal)
+COPY --from=builder /app/target/admin-portal.war /usr/local/tomcat/webapps/ROOT.war
 
-# Switch to non-root user
-USER appuser
+# CHANGED: Expose port 8080
+# This is Tomcat's default port.
+# Render will automatically map its external port (like 10000) to this.
+EXPOSE 8080
 
-# Copy webapp-runner.jar from the builder stage
-COPY --from=builder /app/webapp-runner.jar .
-
-# Copy the built .war file
-COPY --from=builder /app/target/admin-portal.war app.war
-
-# Render exposes port 10000 by default
-EXPOSE 10000
-
-# Health check (optional, adjust as needed)
+# CHANGED: Updated health check to use port 8080
+# This just checks if the Tomcat server is responding on the root page.
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:10000/health || exit 1
+  CMD curl -f http://localhost:8080/ || exit 1
 
-# This command starts the server
-CMD ["java", "-jar", "webapp-runner.jar", "--port", "10000", "app.war"]
+# REMOVED: The custom CMD is no longer needed.
+# The 'tomcat:10.1' base image already includes the correct
+# command (CMD ["catalina.sh", "run"]) to start the server.
