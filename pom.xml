@@ -4,8 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>in.ac.au.msc</groupId>
-	<artifactId>AuMscCs</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>admin-portal</artifactId> <version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>AU MSc Computer Science Portal</name>
 	<description>A management portal for MSc CS students.</description>
@@ -17,22 +16,12 @@
 	</properties>
 
 	<dependencies>
-		<!-- All your dependencies (servlet, jstl, postgresql, etc.) -->
-        <dependency>
-         <groupId>jakarta.servlet.jsp.jstl</groupId>
-         <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-         <version>3.0.0</version>  <!-- Ensure this is 3.0.0, not 3.0.0-RC1 -->
-     </dependency>
-     <dependency>
-         <groupId>org.glassfish.web</groupId>
-         <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-         <version>3.0.0</version>  <!-- This is already correct -->
-     </dependency>
 		<dependency>
 			<groupId>org.glassfish.web</groupId>
 			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
 			<version>3.0.0</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -61,8 +50,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>${project.artifactId}</finalName>
-		<plugins>
+		<finalName>admin-portal</finalName> <plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.11.0</version>

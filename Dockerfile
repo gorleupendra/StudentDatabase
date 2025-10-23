@@ -16,8 +16,8 @@ COPY src ./src
 # Build the WAR file, skipping tests for deployment
 RUN mvn clean package -DskipTests
 
-# Download webapp-runner.jar using Maven (more reliable than wget)
-RUN mvn dependency:get -Dartifact=com.github.jsimone:webapp-runner:9.0.72.0 -Ddest=webapp-runner.jar
+# CHANGED: Download webapp-runner.jar using the version from your image
+RUN mvn dependency:get -Dartifact=com.github.jsimone:webapp-runner:9.0.85.0 -Ddest=webapp-runner.jar
 
 # ---------------------------
 # Stage 2: Run the application
@@ -37,8 +37,8 @@ USER appuser
 # Copy webapp-runner.jar from the builder stage
 COPY --from=builder /app/webapp-runner.jar .
 
-# Copy the built .war file from the 'builder' stage
-COPY --from=builder /app/target/*.war app.war
+# CHANGED: Copy the specific .war file (built from the corrected pom.xml)
+COPY --from=builder /app/target/admin-portal.war app.war
 
 # Render exposes port 10000 by default; make it configurable if needed
 EXPOSE 10000
