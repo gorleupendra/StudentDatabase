@@ -14,10 +14,11 @@ COPY pom.xml .
 COPY src ./src
 
 # Build the WAR file, skipping tests for deployment
-RUN mvn clean package -DskipTests
+# The -U flag forces an update of dependencies, clearing bad cache
+RUN mvn clean package -U -DskipTests
 
-# CHANGED: Download webapp-runner.jar using an available version
-RUN mvn dependency:get -Dartifact=com.github.jsimone:webapp-runner:9.0.84.0 -Ddest=webapp-runner.jar
+# CHANGED: Use the correct 'com.heroku' groupId and a valid version
+RUN mvn dependency:get -Dartifact=com.heroku:webapp-runner:9.0.97.0 -Ddest=webapp-runner.jar
 
 # ---------------------------
 # Stage 2: Run the application
@@ -37,15 +38,15 @@ USER appuser
 # Copy webapp-runner.jar from the builder stage
 COPY --from=builder /app/webapp-runner.jar .
 
-# Copy the specific .war file (built from the corrected pom.xml)
+# Copy the built .war file
 COPY --from=builder /app/target/admin-portal.war app.war
 
-# Render exposes port 10000 by default; make it configurable if needed
+# Render exposes port 10000 by default
 EXPOSE 10000
 
-# Health check (optional, assumes your app has a /health endpoint; adjust as needed)
+# Health check (optional, adjust as needed)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:10000/health || exit 1
 
-# This command starts the server using the copied JAR and WAR files
+# This command starts the server
 CMD ["java", "-jar", "webapp-runner.jar", "--port", "10000", "app.war"]
